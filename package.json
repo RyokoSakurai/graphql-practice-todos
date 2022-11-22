@@ -19,6 +19,7 @@
   "homepage": "https://github.com/RyokoSakurai/graphql-practice-todos#readme",
   "dependencies": {
     "apollo-server": "^3.11.1",
-    "graphql": "^16.6.0"
+    "graphql": "^16.6.0",
+    "moment": "^2.29.4"
   }
 }
