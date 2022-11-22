@@ -54,7 +54,26 @@ const tasks = [
       done: false
     }
   ];
-  
+  //require('モジュール名')でライブラリを読み込むことができる
+  const moment = require('moment')
+  /**
+* taskがurgent(緊急)かどうか
+* @param {Object} task タスク
+* @return {Boolean} taskがurgentであればtrue
+*/
+//!task.doneはtaskが未完了のもの
+//moment()は現在時刻の取得
+//moment().add(8, "hours")は今現在から8時間後の時間が欲しい
+//isAfter(task.expiresAt)は期限よりあとならばという意味
+const isUrgent = (task) => !task.done && moment().add(8,"hours").isAfter(task.expiresAt)
+/**
+* リスト内のtaskにurgentプロパティを追加する
+* @param {Array} tasks タスクのリスト
+* @return {Array} urgentプロパティが追加されたtaskのリスト
+*/
+//map()は配列の各要素に対してコールバック関数を実行し、その結果を新しい配列として返す
+//object.assign()は1つ目のオブジェクトのプロパティに2つめのオブジェクトのプロパティを上書きする
+const addUrgent = (task) => task.map(task => Object.assign({}, task, {urgent: isUrgent(task)}))
   /**
   * GraphQLのResolver（このドメイン名のIPアドレスは何？とかをDNSサーバに聞いてくれるやつ）
   */
@@ -66,21 +85,21 @@ const tasks = [
       /**
       * すべてのタスク
       */
-      allTasks: () => tasks,
+      allTasks: () => addUrgent(tasks),
       /**
       * 完了済タスク（taskがtrueのやつ）
       */
-      finishedTasks: ()=> tasks.filter(task => task.done),
+      finishedTasks: ()=> addUrgent(tasks).filter(task => task.done),
       /**
       * 未完了タスク（taskがfalseのやつ）
       */
-      unfinishedTasks: ()=> tasks.filter(task => !task.done),
+      unfinishedTasks: ()=> addUrgent(tasks).filter(task => !task.done),
       /**
       * IDからタスクを取得する
       * Schemaで定義したパラメータは第２引数のargsオブジェクトの中に格納される点に注意
       * tasksの中からtask.idとargs.idが一致するtaskを見つける
       * (_, args)の_,は何を示しているんだろう      */
-      taskByID: (_, args) => tasks.find(task => task.id === args.id)
+      taskByID: (_, args) => addUrgent(tasks).find(task => task.id === args.id)
     }
   };
   
