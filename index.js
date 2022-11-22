@@ -17,6 +17,8 @@ const typeDefs = gql`
     expiresAt: String!
     "完了フラグ(完了していればtrue)"
     done: Boolean!
+    "緊急タスクかどうか"
+    urgent: Boolean!
   }
 
   "クエリ"
@@ -52,7 +54,7 @@ const tasks = [
       done: false
     }
   ];
-  
+  const moment = require('moment');
   /**
   * GraphQLのResolver（このドメイン名のIPアドレスは何？とかをDNSサーバに聞いてくれるやつ）
   */
@@ -79,7 +81,19 @@ const tasks = [
       * tasksの中からtask.idとargs.idが一致するtaskを見つける
       * (_, args)の_,は何を示しているんだろう      */
       taskByID: (_, args) => tasks.find(task => task.id === args.id)
-    }
+    },
+    /**
+  * "Task"ノードについてのResolver
+  */
+     Task:{
+      /**
+    * taskがurgent(緊急)かどうか
+    * urgentノードに割り当てられたResolver
+    * @param {Object} task タスク(Resolverの第１引数には"親ノード"が渡される)
+    * @return {Boolean} taskがurgentであればtrue
+    */
+    urgent: (task) => !task.done && moment().add(8,"hours").isAfter(task.expiresAt)
+     }
   };
   
   //定義したSchema(typeDefs)とRosolversを使用してApolloServerを作成
