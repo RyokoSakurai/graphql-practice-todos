@@ -17,6 +17,8 @@ const typeDefs = gql`
     expiresAt: String!
     "完了フラグ(完了していればtrue)"
     done: Boolean!
+    "緊急タスクかどうか"
+    urgent: Boolean!
   }
 
   "クエリ"
