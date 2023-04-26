@@ -4,7 +4,7 @@ on:
   pull_request:
 
 env:
-  FILE_PATTERN: "*.js"
+  FILE_PATTERN: "*.js .github/workflows/*.yml"
 
 jobs:
   lint:
